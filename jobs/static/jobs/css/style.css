@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 0;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    color: #0044cc;
+}
+
+.logo img {
+    height: 70px;
+}
+
+.menu ol {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li {
+    cursor: pointer;
+}
+
+.main {
+    text-align: center;
+    padding: 60px;
+}
+
+.main h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.main p {
+    font-size: 18px;
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0044cc;
+}

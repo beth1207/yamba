@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ job.title }}</h1>
+<p>{{ job.description }}</p>
+<p>Budget: {{ job.budget }}</p>
+<p>Posted by: {{ job.created_by }}</p>
+<a href="{% url 'edit_job' job.id %}">Edit</a>
+<a href="{% url 'cancel_job' job.id %}">Cancel</a>
+{% endblock %}
