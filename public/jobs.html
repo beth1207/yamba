@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Available Jobs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="logo.png" alt="Logo" /></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">User</a></li>
+      <li><a href="#">Help</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <h1>Available Jobs</h1>
+    <div id="jobList"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-section logo-section">
+      <img src="logo.png" class="footer-logo-img" />
+      <span class="footer-logo-text">JobBoard</span>
+    </div>
+    <div class="footer-section contact-section">
+      <p>Email: contact@jobboard.com</p>
+      <p>Tel: +256 712 345678</p>
+    </div>
+    <div class="footer-section socials-section">
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </footer>
+
+ <script>
+    function isUrgent(durationValue, durationUnit) {
+      if (durationUnit === 'hours' && durationValue <= 24) return true;
+      return false;
+    }
+
+    async function loadJobs() {
+      try {
+        const res = await fetch('/api/jobs');
+        const jobs = await res.json();
+        const container = document.getElementById('jobList');
+
+        if (!jobs || jobs.length === 0) {
+          container.innerHTML = "<p>No jobs available yet.</p>";
+          return;
+        }
+
+        container.innerHTML = jobs.map(job => {
+          let durationValue = 1;
+let durationUnit = 'days';
+
+if (typeof job.duration === 'string') {
+  const durationParts = job.duration.trim().split(' ');
+  durationValue = parseInt(durationParts[0]) || 1;
+  durationUnit = durationParts[1]?.toLowerCase() || 'days';
+}
+
+          const urgentClass = isUrgent(durationValue, durationUnit) ? 'urgent' : '';
+
+          return `
+            <div class="job-card ${urgentClass}" data-jobid="${job.id}">
+              <h3>${job.title}</h3>
+              <details>
+                <summary>View Details</summary>
+                <p><strong>Description:</strong> ${job.description}</p>
+                <p><strong>Budget:</strong> ${job.negotiable ? "Negotiable" : job.budget + " UGX"}</p>
+                <p><strong>Duration:</strong> ${job.duration}</p>
+              </details>
+              <button onclick="acceptJob(${job.id})">Accept Job</button>
+              <p class="contact-info" style="display:none;"><strong>Contact:</strong> <span></span></p>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error("Failed to load jobs:", err);
+        document.getElementById('jobList').innerHTML = "<p>Error loading jobs.</p>";
+      }
+    }
+
+    async function acceptJob(jobId) {
+      try {
+        const res = await fetch('/api/jobs');
+        const jobs = await res.json();
+        const job = jobs.find(j => j.id === jobId);
+        if (!job) return alert('Job not found.');
+
+        const card = document.querySelector(`.job-card[data-jobid="${jobId}"]`);
+        if (!card) return;
+
+        const contactP = card.querySelector('.contact-info');
+        contactP.style.display = 'block';
+        contactP.querySelector('span').textContent = job.contact;
+
+        const btn = card.querySelector('button');
+        btn.disabled = true;
+        btn.textContent = 'Accepted';
+      } catch (err) {
+        alert("Something went wrong accepting the job.");
+        console.error(err);
+      }
+    }
+
+    loadJobs();
+  </script>
+
+</body>
+</html>

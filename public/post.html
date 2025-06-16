@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post a Job</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR (reusing from index) -->
+  <nav class="navbar">
+    <div class="logo"><img src="logo.png" alt="Logo" /></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">User</a></li>
+      <li><a href="#">Help</a></li>
+    </ul>
+  </nav>
+
+  <!-- FORM SECTION -->
+  <main class="container">
+  <h1>Post a Job</h1>
+  <form id="jobForm" class="job-form">
+    
+    <div class="form-row">
+      <label>Job Title:</label>
+      <input type="text" name="title" required />
+    </div>
+
+    <div class="form-row">
+      <label>Job Description:</label>
+      <textarea name="description" rows="3" required></textarea>
+    </div>
+
+    <div class="form-row">
+      <label>Budget (UGX):</label>
+      <input type="number" name="budget" required />
+    </div>
+
+    <div class="form-row">
+      <label></label>
+      <label class="inline">
+        <input type="checkbox" name="negotiable" />
+        Negotiable
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Contact Info:</label>
+      <input type="text" name="contact" required />
+    </div>
+
+    <div class="form-row">
+      <label for="durationValue">Duration:</label>
+<input type="number" id="durationValue" name="durationValue" min="1" required style="width: 80px;">
+
+<select id="durationUnit" name="durationUnit" required>
+  <option value="days" selected>Days</option>
+  <option value="hours">Hours</option>
+</select>
+
+    </div>
+
+    <div class="form-row">
+      <label></label>
+      <button type="submit">Submit Job</button>
+    </div>
+
+  </form>
+
+  <p id="successMessage" style="display:none; color:green; margin-top:20px;">
+    Job posted successfully! Redirecting to homepage...
+  </p>
+</main>
+
+
+  <!-- FOOTER -->
+ <footer class="footer">
+  <div class="footer-section logo-section">
+    <img src="logo.png" alt="Logo" class="footer-logo-img" />
+    <span class="footer-logo-text">Yamba platform</span>
+  </div>
+
+  <div class="footer-section contact-section">
+    <p>Email: contact@jobboard.com</p>
+    <p>Tel: +256 712 345678</p>
+  </div>
+
+  <div class="footer-section socials-section">
+    <a href="#">Facebook</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+ <script>
+  const form = document.getElementById('jobForm');
+  const message = document.getElementById('successMessage');
+
+  form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  try {
+    const durationValue = document.getElementById('durationValue').value;
+    const durationUnit = document.getElementById('durationUnit').value;
+
+    const jobData = {
+      title: form.title.value,
+      description: form.description.value,
+      budget: form.budget.value,
+      negotiable: form.negotiable.checked,
+      contact: form.contact.value,
+      duration: `${durationValue} ${durationUnit}`,
+    };
+
+    const res = await fetch('/api/jobs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jobData),
+    });
+
+    if (res.ok) {
+      message.style.display = 'block';
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    } else {
+      alert("Job post failed. Server responded with an error.");
+      console.error("Server error:", await res.text());
+    }
+
+  } catch (err) {
+    alert("An error occurred while posting the job.");
+    console.error("JS error:", err);
+  }
+});
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+[
+  {
+    "title": "dfg",
+    "description": "sdfg",
+    "budget": "56666",
+    "negotiable": false,
+    "contact": "9570=570",
+    "duration": 5,
+    "createdAt": "2025-06-16T10:56:27.724Z",
+    "id": 1750071387736
+  },
+  {
+    "title": "web developer",
+    "description": "create screens for my new app",
+    "budget": "3000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": 1,
+    "createdAt": "2025-06-16T10:58:13.379Z",
+    "id": 1750071493382
+  },
+  {
+    "title": "web",
+    "description": "design",
+    "budget": "67777",
+    "negotiable": true,
+    "contact": "65444442",
+    "duration": "2 hours",
+    "id": 1750072758581
+  },
+  {
+    "title": "cleaner",
+    "description": "6bedrooms",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "09876543",
+    "duration": "12 hours",
+    "id": 1750073759876
+  }
+]
