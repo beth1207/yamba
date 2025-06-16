@@ -1,0 +1,60 @@
+<form method="post">
+  {% csrf_token %}
+  
+  <div class="mb-3">
+    {{ form.title.label_tag }}<br>
+    {{ form.title }}
+    {% if form.title.errors %}
+      <div class="text-danger">{{ form.title.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.description.label_tag }}<br>
+    {{ form.description }}
+    {% if form.description.errors %}
+      <div class="text-danger">{{ form.description.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+  {{ form.skills_required.label_tag }}<br>
+  {{ form.skills_required }}
+  {% if form.skills_required.errors %}
+    <div class="text-danger">{{ form.skills_required.errors }}</div>
+  {% endif %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.location.label_tag }}<br>
+    {{ form.location }}
+    {% if form.location.errors %}
+      <div class="text-danger">{{ form.location.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.expiry_date.label_tag }}<br>
+    {{ form.expiry_date }}
+    {% if form.expiry_date.errors %}
+      <div class="text-danger">{{ form.expiry_date.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="mb-3">
+    {{ form.budget.label_tag }}<br>
+    {{ form.budget }}
+    {% if form.budget.errors %}
+      <div class="text-danger">{{ form.budget.errors }}</div>
+    {% endif %}
+  </div>
+
+  <div class="form-check mb-3">
+    {{ form.is_negotiable }} {{ form.is_negotiable.label_tag }}
+    {% if form.is_negotiable.errors %}
+      <div class="text-danger">{{ form.is_negotiable.errors }}</div>
+    {% endif %}
+  </div>
+
+  <button type="submit" class="btn btn-primary">Post Job</button>
+</form>
