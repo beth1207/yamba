@@ -48,4 +48,4 @@ def post_job(request):
 
 def job_detail(request, pk):  # ✅ Unified to use 'pk'
     job = get_object_or_404(Job, pk=pk)
-    return render(request, 'job_detail.html', {'job': job})
+    return render(request, 'jobs/job_detail.html', {'job': job})

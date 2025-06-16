@@ -18,6 +18,14 @@
   </div>
 
   <div class="mb-3">
+  {{ form.skills_required.label_tag }}<br>
+  {{ form.skills_required }}
+  {% if form.skills_required.errors %}
+    <div class="text-danger">{{ form.skills_required.errors }}</div>
+  {% endif %}
+  </div>
+
+  <div class="mb-3">
     {{ form.location.label_tag }}<br>
     {{ form.location }}
     {% if form.location.errors %}
