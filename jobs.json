@@ -36,5 +36,24 @@
     "contact": "09876543",
     "duration": "12 hours",
     "id": 1750073759876
+  },
+  {
+    "id": "123",
+    "title": "Task title",
+    "description": "Job details",
+    "duration": "6h",
+    "isUrgent": true,
+    "createdAt": "2025-06-17T08:00:00Z",
+    "claimedBy": null,
+    "status": "open"
+  },
+  {
+    "title": "d",
+    "description": "as",
+    "budget": "6789",
+    "negotiable": true,
+    "contact": "45674567456",
+    "duration": "1 days",
+    "id": 1750151990370
   }
 ]

@@ -1,0 +1,31 @@
+<!-- help.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help - Yamba</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <main class="help-container">
+    <h2>Submit a Support Request</h2>
+    <form id="helpForm">
+      <label for="issue">Describe your issue:</label>
+      <textarea id="issue" name="issue" rows="5" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('helpForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const issue = document.getElementById('issue').value.trim();
+      alert('Your issue has been submitted. Thank you!');
+      // In production, send to a backend or email system
+    });
+  </script>
+
+</body>
+</html>

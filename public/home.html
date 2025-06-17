@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yamba platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    // Check if the user is signed up
+    if (!localStorage.getItem("userSignedUp")) {
+      // If not, redirect them to signup page
+      window.location.href = "index.html";
+    }
+  </script>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+<nav class="navbar">
+  <div class="logo">
+    <a href="index.html"><img src="logo.png" alt="JobBoard Logo" /></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="account.html">Account</a></li>
+    <li><a href="help.html">Help</a></li>
+  </ul>
+</nav>
+
+  <!-- MAIN SECTION -->
+  <main class="container">
+    <h1>Welcome to Yamba platform</h1>
+    <p>empowering skills and bridging opportunities</p>
+    
+    <div class="buttons">
+      <button onclick="location.href='post.html'">Post a Job</button>
+      <button onclick="location.href='jobs.html'">View Available Jobs</button>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+ <footer class="footer">
+  <div class="footer-section logo-section">
+    <img src="logo.png" alt="Logo" class="footer-logo-img" />
+    <span class="footer-logo-text">Yamba platform</span>
+  </div>
+
+  <div class="footer-section contact-section">
+    <p>Email: yambaplatform@gmail.com</p>
+    <p>Tel: +256 752 566 630</p>
+  </div>
+
+  <div class="footer-section socials-section">
+    <a href="#">Facebook</a>
+    <a href="#">Twitter</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+
+<script>
+  // Block access if user hasn't signed up
+  if (!localStorage.getItem('userSignedUp')) {
+    window.location.href = 'signup.html';
+  }
+
+  // Display user info
+  const user = JSON.parse(localStorage.getItem('userData'));
+  if (user) {
+    const accountLink = document.getElementById('accountLink');
+    accountLink.textContent = `Account: ${user.name} (${user.skills})`;
+    accountLink.title = `User ID: ${user.id}`; // Optional tooltip
+  }
+</script>
+
+
+
+</body>
+</html>

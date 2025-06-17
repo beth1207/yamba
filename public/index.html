@@ -3,53 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Job Board MVP</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Sign Up - Yamba</title>
+  <link rel="stylesheet" href="index.css" />
 </head>
 <body>
 
-  <!-- NAVIGATION -->
-  <nav class="navbar">
-<div class="logo">
-  <img src="logo.png" alt="JobBoard Logo" />
-</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#">User</a></li>
-      <li><a href="#">Help</a></li>
-    </ul>
-  </nav>
+  <main class="signup-container">
+    <h2>Create Your Account</h2>
+    <form id="signupForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
 
-  <!-- MAIN SECTION -->
-  <main class="container">
-    <h1>Welcome to Yamba platform</h1>
-    <p>empowering skills and bridging opportunities</p>
-    
-    <div class="buttons">
-      <button onclick="location.href='post.html'">Post a Job</button>
-      <button onclick="location.href='jobs.html'">View Available Jobs</button>
-    </div>
+      <label for="skills">Your skills</label>
+      <input type="text" id="skills" name="skills" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" required>
+
+      <button type="submit">Sign Up</button>
+    </form>
   </main>
 
-  <!-- FOOTER -->
- <footer class="footer">
-  <div class="footer-section logo-section">
-    <img src="logo.png" alt="Logo" class="footer-logo-img" />
-    <span class="footer-logo-text">Yamba platform</span>
-  </div>
+  <footer class="footer">
+    <p>&copy; 2025 Yamba platform. All rights reserved.</p>
+  </footer>
 
-  <div class="footer-section contact-section">
-    <p>Email: contact@jobboard.com</p>
-    <p>Tel: +256 712 345678</p>
-  </div>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-  <div class="footer-section socials-section">
-    <a href="#">Facebook</a>
-    <a href="#">Twitter</a>
-    <a href="#">LinkedIn</a>
-  </div>
-</footer>
+      const name = document.getElementById('name').value.trim();
+      const skills = document.getElementById('skills').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const id = 'ID-' + Math.floor(Math.random() * 1000000);
 
+      if (!name || !skills || !email || !phone) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      const userData = { name, skills, email, phone, id };
+      localStorage.setItem('userSignedUp', 'true');
+      localStorage.setItem('userData', JSON.stringify(userData));
+
+      // Redirect to home page after signup
+      window.location.href = 'home.html';
+
+    });
+  </script>
 
 </body>
 </html>
