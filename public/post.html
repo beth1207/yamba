@@ -94,49 +94,53 @@
   </div>
 </footer>
 
- <script>
+<script>
   const form = document.getElementById('jobForm');
   const message = document.getElementById('successMessage');
 
-  form.addEventListener('submit', async function (e) {
-  e.preventDefault();
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-  try {
     const durationValue = document.getElementById('durationValue').value;
     const durationUnit = document.getElementById('durationUnit').value;
+    const user = JSON.parse(localStorage.getItem("userData"))?.name || "anon";
 
-    const jobData = {
+    const now = Date.now();
+    const durationHours = durationUnit === "hours"
+      ? parseInt(durationValue)
+      : parseInt(durationValue) * 24;
+
+    const expiresAt = now + durationHours * 60 * 60 * 1000;
+
+    const generateJobId = (poster, expiresAt) => {
+      const date = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
+      return `job-${poster}_${date}_${expiresAt}`;
+    };
+
+    const job = {
+      id: generateJobId(user, expiresAt),
       title: form.title.value,
       description: form.description.value,
       budget: form.budget.value,
       negotiable: form.negotiable.checked,
       contact: form.contact.value,
       duration: `${durationValue} ${durationUnit}`,
+      postedAt: now,
+      expiresAt,
+      claimedBy: ""
     };
 
-    const res = await fetch('/api/jobs', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(jobData),
-    });
+    const jobList = JSON.parse(localStorage.getItem("jobList")) || [];
+    jobList.push(job);
+    localStorage.setItem("jobList", JSON.stringify(jobList));
 
-    if (res.ok) {
-      message.style.display = 'block';
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
-    } else {
-      alert("Job post failed. Server responded with an error.");
-      console.error("Server error:", await res.text());
-    }
-
-  } catch (err) {
-    alert("An error occurred while posting the job.");
-    console.error("JS error:", err);
-  }
-});
-
+    message.style.display = 'block';
+    setTimeout(() => {
+      window.location.href = 'home.html';
+    }, 2000);
+  });
 </script>
+
 
 
 

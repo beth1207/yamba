@@ -7,14 +7,14 @@
 </head>
 <body>
   <nav class="navbar">
-  <div class="logo">
-    <a href="home.html"><img src="logo.png" alt="JobBoard Logo" /></a>
-  </div>
-  <ul class="nav-links">
-    <li><a href="account.html">Account</a></li>
-    <li><a href="help.html">Help</a></li>
-  </ul>
-</nav>
+    <div class="logo">
+      <a href="home.html"><img src="logo.png" alt="JobBoard Logo" /></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="account.html">Account</a></li>
+      <li><a href="help.html">Help</a></li>
+    </ul>
+  </nav>
 
   <main class="container">
     <h1>Available Jobs</h1>
@@ -37,80 +37,162 @@
     </div>
   </footer>
 
- <script>
-    function isUrgent(durationValue, durationUnit) {
-      if (durationUnit === 'hours' && durationValue <= 24) return true;
-      return false;
+  <script>
+  function isUrgent(durationValue, durationUnit) {
+    return durationUnit === 'hours' && durationValue <= 24;
+  }
+
+  function loadJobs() {
+    const jobList = JSON.parse(localStorage.getItem("jobList")) || [];
+    const currentJob = JSON.parse(localStorage.getItem("currentJob"));
+    const jobListContainer = document.getElementById("jobList");
+
+    // Filter out claimed jobs and the current user's job
+    const availableJobs = jobList.filter(job => {
+      // Hide jobs that are claimed
+      if (job.claimed) return false;
+      
+      // Hide the current user's active job
+      if (currentJob && (currentJob.originalId === job.id || currentJob.id === job.id)) {
+        return false;
+      }
+      
+      return true;
+    });
+
+    if (availableJobs.length === 0) {
+      jobListContainer.innerHTML = "<p>No jobs available at the moment.</p>";
+      return;
     }
 
-    async function loadJobs() {
-      try {
-        const res = await fetch('/api/jobs');
-        const jobs = await res.json();
-        const container = document.getElementById('jobList');
+    jobListContainer.innerHTML = availableJobs.map(job => {
+      const durationParts = job.duration.split(" ");
+      const durationValue = parseInt(durationParts[0]);
+      const durationUnit = durationParts[1];
+      const urgentClass = isUrgent(durationValue, durationUnit) ? "urgent" : "";
 
-        if (!jobs || jobs.length === 0) {
-          container.innerHTML = "<p>No jobs available yet.</p>";
+      return `
+        <div class="job-card ${urgentClass}" data-job-id="${job.id}" data-duration="${durationValue}">
+          <h3>${job.title}</h3>
+
+          <details>
+            <summary>View Details</summary>
+            <p><strong>Description:</strong> ${job.description}</p>
+            <p><strong>Budget:</strong> ${job.budget ? job.budget + " UGX" : ""} ${job.negotiable ? "(Negotiable)" : ""}</p>
+            <p><strong>Duration:</strong> ${job.duration}</p>
+            <button class="contact-btn">Contact</button>
+            <p class="contact-info" style="display:none;"><strong>Contact:</strong> ${job.contact || 'N/A'}</p>
+          </details>
+
+          <div class="button-row">
+            <button onclick="shareJob('${job.id}')">Share</button>
+            <button class="take-job-btn" data-job-id="${job.id}">Take Job</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    handleJobButtons();
+  }
+
+  function handleJobButtons() {
+    // Handle contact buttons
+    const contactBtns = document.querySelectorAll('.contact-btn');
+    contactBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const contactInfo = this.nextElementSibling;
+        if (contactInfo.style.display === 'none') {
+          contactInfo.style.display = 'block';
+          this.textContent = 'Hide Contact';
+        } else {
+          contactInfo.style.display = 'none';
+          this.textContent = 'Contact';
+        }
+      });
+    });
+
+    // Handle take job buttons
+    const takeJobBtns = document.querySelectorAll('.take-job-btn');
+    takeJobBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const jobCard = this.closest('.job-card');
+        const jobId = jobCard.dataset.jobId;
+        const durationHours = parseInt(jobCard.dataset.duration) || 24;
+        const expiresAt = Date.now() + durationHours * 60 * 60 * 1000;
+
+        const user = JSON.parse(localStorage.getItem("userData"))?.name || "anon";
+
+        // Check if user already has a current job
+        const currentJob = JSON.parse(localStorage.getItem("currentJob"));
+        if (currentJob && !currentJob.completed) {
+          alert("⚠️ You already have an active job. Please complete it before taking another one.");
           return;
         }
 
-        container.innerHTML = jobs.map(job => {
-          let durationValue = 1;
-let durationUnit = 'days';
+        // Find the specific job being claimed
+        const jobToClaim = jobList.find(job => job.id === jobId);
+        if (!jobToClaim) {
+          alert("❌ Job not found!");
+          return;
+        }
 
-if (typeof job.duration === 'string') {
-  const durationParts = job.duration.trim().split(' ');
-  durationValue = parseInt(durationParts[0]) || 1;
-  durationUnit = durationParts[1]?.toLowerCase() || 'days';
-}
+        // Update the specific job as claimed
+        const updatedJobList = jobList.map(job => {
+          if (job.id === jobId) {
+            return { ...job, claimed: true, claimedBy: user, claimedAt: Date.now() };
+          }
+          return job;
+        });
 
-          const urgentClass = isUrgent(durationValue, durationUnit) ? 'urgent' : '';
+        // Save updated jobList
+        localStorage.setItem("jobList", JSON.stringify(updatedJobList));
 
-          return `
-            <div class="job-card ${urgentClass}" data-jobid="${job.id}">
-              <h3>${job.title}</h3>
-              <details>
-                <summary>View Details</summary>
-                <p><strong>Description:</strong> ${job.description}</p>
-                <p><strong>Budget:</strong> ${job.negotiable ? "Negotiable" : job.budget + " UGX"}</p>
-                <p><strong>Duration:</strong> ${job.duration}</p>
-              </details>
-              <button onclick="acceptJob(${job.id})">Accept Job</button>
-              <p class="contact-info" style="display:none;"><strong>Contact:</strong> <span></span></p>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error("Failed to load jobs:", err);
-        document.getElementById('jobList').innerHTML = "<p>Error loading jobs.</p>";
-      }
+        // Save claimed job with original job data
+        const claimedJob = {
+          ...jobToClaim,
+          id: updateJobIdWithClaimer(jobId, user),
+          originalId: jobId,
+          claimedAt: Date.now(),
+          expiresAt,
+          completed: false,
+          claimedBy: user
+        };
+
+        localStorage.setItem('currentJob', JSON.stringify(claimedJob));
+        alert("✅ You've successfully taken this job. You must complete it before applying for others.");
+        location.reload();
+      });
+    });
+  }
+
+  function shareJob(jobId) {
+    const shareUrl = `${window.location.origin}/job.html?id=${jobId}`;
+    if (navigator.share) {
+      navigator.share({
+        title: 'New Job Opportunity on Yamba!',
+        text: 'Check out this job I found on Yamba.',
+        url: shareUrl,
+      });
+    } else {
+      prompt("Copy this link and share:", shareUrl);
     }
+  }
 
-    async function acceptJob(jobId) {
-      try {
-        const res = await fetch('/api/jobs');
-        const jobs = await res.json();
-        const job = jobs.find(j => j.id === jobId);
-        if (!job) return alert('Job not found.');
+  function generateJobId(poster, expiresAt) {
+    const now = new Date();
+    const date = now.toISOString().split('T')[0].replace(/-/g, '');
+    const time = now.toTimeString().split(' ')[0].replace(/:/g, '');
+    const expiryISO = new Date(expiresAt).toISOString().replace(/[-:]/g, '').split('.')[0];
+    return `job-${poster}_${date}_${time}__${expiryISO}__`;
+  }
 
-        const card = document.querySelector(`.job-card[data-jobid="${jobId}"]`);
-        if (!card) return;
+  function updateJobIdWithClaimer(jobId, claimer) {
+    const parts = jobId.split('__');
+    return `${parts[0]}__${parts[1]}__${claimer}`;
+  }
 
-        const contactP = card.querySelector('.contact-info');
-        contactP.style.display = 'block';
-        contactP.querySelector('span').textContent = job.contact;
-
-        const btn = card.querySelector('button');
-        btn.disabled = true;
-        btn.textContent = 'Accepted';
-      } catch (err) {
-        alert("Something went wrong accepting the job.");
-        console.error(err);
-      }
-    }
-
-    loadJobs();
-  </script>
+  document.addEventListener('DOMContentLoaded', loadJobs);
+</script>
 
 </body>
 </html>

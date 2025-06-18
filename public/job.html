@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Details - Yamba</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <a href="home.html"><img src="logo.png" alt="Yamba Logo" /></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="account.html">Account</a></li>
+      <li><a href="help.html">Help</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <h1>Job Details</h1>
+    <div id="jobDetails"></div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Yamba platform</p>
+  </footer>
+
+  <script>
+    // Redirect to signup if not signed in
+    if (!localStorage.getItem('userSignedUp')) {
+      window.location.href = "signup.html";
+    }
+
+    // Extract job ID from URL
+    function getJobIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    const jobId = getJobIdFromUrl();
+    const jobList = JSON.parse(localStorage.getItem('jobList')) || [];
+     jobList.push(job);
+     localStorage.setItem("jobList", JSON.stringify(jobList));
+    const currentJob = JSON.parse(localStorage.getItem('currentJob'));
+    const container = document.getElementById('jobDetails');
+
+    if (!jobId) {
+      container.innerHTML = "<p>No job ID provided.</p>";
+    } else {
+      console.log("Job ID from URL:", jobId);
+      console.log("Stored jobs:", jobList.map(j => j.id));
+
+      // Use startsWith to allow claimed job IDs to match base ID
+      const job = jobList.find(j => jobId.startsWith(j.id));
+
+      if (!job) {
+        container.innerHTML = "<p>Job not found or may have expired.</p>";
+      } else {
+        const jobHTML = `
+          <div class="job-card" data-job-id="${job.id}">
+            <h2>${job.title}</h2>
+            <p><strong>Description:</strong> ${job.description}</p>
+            <p><strong>Budget:</strong> ${job.negotiable ? "Negotiable" : job.budget + " UGX"}</p>
+            <p><strong>Duration:</strong> ${job.duration}</p>
+            <p><strong>Contact:</strong> ${job.contact}</p>
+            <button id="claimBtn" ${currentJob ? "disabled" : ""}>
+              ${currentJob ? "Already claimed a job" : "Claim this Job"}
+            </button>
+          </div>
+        `;
+        container.innerHTML = jobHTML;
+
+        document.getElementById("claimBtn").addEventListener("click", () => {
+          if (!currentJob) {
+            const hours = parseInt(job.duration) || 24;
+            const expiresAt = Date.now() + hours * 60 * 60 * 1000;
+
+            localStorage.setItem('currentJob', JSON.stringify({
+              id: job.id,
+              claimedAt: Date.now(),
+              expiresAt: expiresAt,
+              completed: false
+            }));
+
+            alert("Job claimed successfully! Complete it before taking another.");
+            location.reload();
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -55,5 +55,59 @@
     "contact": "45674567456",
     "duration": "1 days",
     "id": 1750151990370
+  },
+  {
+    "title": "web developer",
+    "description": "develop 10 pages for an application, come with your transcript and laptop. front end knowledge required, no ai and bullshit. ",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": "1 days",
+    "id": 1750241733666
+  },
+  {
+    "title": "web developer",
+    "description": "come with laptop, well versed with front end\nno ai and shyt",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": "1 days",
+    "id": 1750241993769
+  },
+  {
+    "title": "web developer",
+    "description": "come with your own laptop, well versed with front end languages and youll be developing pages for an application",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": "1 days",
+    "id": 1750242358880
+  },
+  {
+    "title": "web developer",
+    "description": "be well versed with the front end languages, and carry your own laptop we'll be developing pages for an appliccation, will sighn a non disclosure agreement as well",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": "1 days",
+    "id": 1750242596624
+  },
+  {
+    "title": "web developer",
+    "description": "we'll be developing pages for an application, be proficient infront end languages and come with your own laptop",
+    "budget": "10000",
+    "negotiable": true,
+    "contact": "0752566630",
+    "duration": "1 days",
+    "id": 1750243016159
+  },
+  {
+    "title": "title",
+    "description": "job description",
+    "budget": "1",
+    "negotiable": false,
+    "contact": "23456",
+    "duration": "1 days",
+    "id": 1750243758583
   }
 ]

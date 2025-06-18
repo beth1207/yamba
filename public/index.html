@@ -10,20 +10,47 @@
 
   <main class="signup-container">
     <h2>Create Your Account</h2>
-    <form id="signupForm">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required>
+    <form id="signupForm" class="form-grid">
 
-      <label for="skills">Your skills</label>
-      <input type="text" id="skills" name="skills" required>
+      <div class="form-group">
+        <label for="idNumber">National ID / Driver’s License / Passport</label>
+        <input type="text" id="idNumber" name="idNumber" required />
+        <button type="button" onclick="verifyID()">Verify ID</button>
+      </div>
 
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" required>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" readonly />
+      </div>
 
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" name="phone" required>
+      <div class="form-group">
+        <label for="birthDate">Date of Birth</label>
+        <input type="date" id="birthDate" name="birthDate" readonly />
+      </div>
 
-      <button type="submit">Sign Up</button>
+      <div class="form-group">
+        <label for="skills">Your Skills</label>
+        <input type="text" id="skills" name="skills" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Create Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Sign Up</button>
+      </div>
     </form>
   </main>
 
@@ -32,29 +59,78 @@
   </footer>
 
   <script>
+    function verifyID() {
+      const idNumber = document.getElementById('idNumber').value.trim();
+
+      const mockDB = {
+        'C12345678901UG': { fullName: "Ankunda Beth", birthDate: "1996-12-07" },
+        'DL-U12345678': { fullName: "Amanya Marvin", birthDate: "1995-07-10" },
+        'P4567890UG': { fullName: "Aijuka Calvin", birthDate: "2000-11-15" },
+        'CP4567890UG': { fullName: "Twinamatsiko Kevin", birthDate: "1994-05-14" },
+        'P34567890UG': { fullName: "Anyujikire Richard", birthDate: "2006-06-15" },
+        'DP4567890UG': { fullName: "Hallan Opook", birthDate: "2006-06-15" }
+      };
+
+      const record = mockDB[idNumber];
+
+      if (record) {
+        document.getElementById('fullName').value = record.fullName;
+        document.getElementById('birthDate').value = record.birthDate;
+        alert('ID Verified! You can proceed.');
+      } else {
+        alert('ID not found. Please check your details.');
+        document.getElementById('fullName').value = '';
+        document.getElementById('birthDate').value = '';
+      }
+    }
+
+    function simulateEmailVerification(email) {
+      const code = Math.floor(100000 + Math.random() * 900000);
+      alert(`(Simulated) Verification code sent to ${email}: ${code}`);
+      const input = prompt("Enter the verification code sent to your email:");
+      return input == code;
+    }
+
     document.getElementById('signupForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const name = document.getElementById('name').value.trim();
+      const name = document.getElementById('fullName').value.trim();
+      const birthdate = document.getElementById('birthDate').value;
       const skills = document.getElementById('skills').value.trim();
       const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const id = 'ID-' + Math.floor(Math.random() * 1000000);
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
 
-      if (!name || !skills || !email || !phone) {
-        alert('Please fill out all fields.');
+      if (!name || !birthdate || !skills || !email || !password) {
+        alert('Please fill all required fields.');
         return;
       }
 
-      const userData = { name, skills, email, phone, id };
-      localStorage.setItem('userSignedUp', 'true');
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      if (!simulateEmailVerification(email)) {
+        alert('Email verification failed.');
+        return;
+      }
+
+      const userData = {
+        idNumber: document.getElementById('idNumber').value,
+        fullName: name,
+        birthDate: birthdate,
+        skills,
+        email,
+        password
+      };
+
       localStorage.setItem('userData', JSON.stringify(userData));
+      localStorage.setItem('userSignedUp', 'true');
 
-      // Redirect to home page after signup
+      alert("Signup successful! Redirecting to home...");
       window.location.href = 'home.html';
-
     });
   </script>
-
 </body>
 </html>
